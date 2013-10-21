@@ -15,6 +15,7 @@ function RabbitMQBus(options, implOpts) {
   
   implOpts =  implOpts || { defaultExchangeName: 'amq.topic' };
   
+  this.throwErrors = false || options.throwErrors;
   this.log = options.log || log;
   this.delayOnStartup = options.delayOnStartup || 10;
   this.initialized = false;
@@ -27,7 +28,9 @@ function RabbitMQBus(options, implOpts) {
 
   this.connection.on('error', function (err) {
     self.log('Error connecting to rabbitmq at '  + options.url + ' error: ' + err.toString());
-    throw err;
+    if(self.throwErrors){
+      throw err;
+    }
   });
 
   this.connection.on('close', function () {
